@@ -182,3 +182,6 @@ button.b.main { background: var(--ui-acc); color: var(--ui-acc-ink); border-colo
 .lay-bloc .minis2 .mini { font-size: 2.4mm; }
 .lay-bloc .minis2 .mini b { font-size: 2.8mm; margin-bottom: 0.8mm; }
 .lay-bloc .minis2 .mini td, .lay-bloc .minis2 .mini th { width: 3.9mm; height: 3.3mm; font-size: 2.4mm; }
+.repo { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--ui-line); }
+.repo a { color: var(--ui-mute); }
+.repo a:hover { color: var(--ui-acc); }
