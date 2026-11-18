@@ -11,13 +11,6 @@
     violet: { name: 'Violet & jaune soleil', bg: '#ffffff', ink: '#5a2bd6', acc: '#ffbf00', onacc: '#141414' },
     tomate: { name: 'Rouge tomate & turquoise', bg: '#ffffff', ink: '#d92d20', acc: '#00a99d', onacc: '#fff' },
     fluo: { name: 'Noir & rose fluo', bg: '#ffffff', ink: '#141414', acc: '#ff2e88', onacc: '#fff' },
-    marine: { name: 'Bleu marine & corail', bg: '#ffffff', ink: '#14275c', acc: '#ff5a4d', onacc: '#fff' },
-    corail: { name: 'Bleu nuit & corail (classique)', bg: '#ffffff', ink: '#1b3466', acc: '#f5593d', onacc: '#fff' },
-    sauge: { name: 'Sauge & moutarde (classique)', bg: '#ffffff', ink: '#3f7d6e', acc: '#f5b544', onacc: '#141414' },
-    lin: { name: 'Bleu lin & brique (classique)', bg: '#ffffff', ink: '#5870a4', acc: '#c2452d', onacc: '#fff' },
-    bordeaux: { name: 'Bordeaux & orange (classique)', bg: '#ffffff', ink: '#8b1a2b', acc: '#d47a1f', onacc: '#fff' },
-    prairie: { name: 'Vert prairie & jaune (classique)', bg: '#ffffff', ink: '#6f9f5a', acc: '#e0a526', onacc: '#141414' },
-    noir: { name: 'Noir & rouge (classique)', bg: '#ffffff', ink: '#141414', acc: '#d6322e', onacc: '#fff' },
   };
 
 
@@ -25,14 +18,14 @@
   const defaultYear = () => { const d = new Date(); return d.getMonth() >= 9 ? d.getFullYear() + 1 : d.getFullYear(); };
   const HAND = ['main', 'bloc'];
   const DEFAULTS = () => ({
-    year: defaultYear(), lang: 'fr', weekStart: 1, theme: 'electrique', layout: 'titre', font: 'grotesk',
+    year: defaultYear(), lang: 'fr', weekStart: 1, theme: 'electrique', colors: { ink: '#2736d9', acc: '#ff6a1f' }, layout: 'titre', font: 'grotesk',
     cantons: { VD: true, GE: true }, excluded: [],
     moon: { full: true, names: true, new: true, quarters: false, time: true },
     weekNumbers: false, weekendTint: true, notes: true, mini: true,
   });
 
   let state = load();
-  if (!THEMES[state.theme]) state.theme = DEFAULTS().theme;
+  if (state.theme !== 'perso' && !THEMES[state.theme]) state.theme = DEFAULTS().theme;
   const photos = {}; // mois (0-11) -> dataURL
 
   function load() {
@@ -68,6 +61,7 @@
     if (el.type === 'number' || el.dataset.k === 'weekStart') v = Number(v);
     if (el.type === 'number' && !(v >= 1900 && v <= 2100)) return;
     setPath(state, el.dataset.k, v);
+    if (el.dataset.k.startsWith('colors.')) { state.theme = 'perso'; syncForm(); }
     save(); render();
   });
 
@@ -77,7 +71,7 @@
       `<button type="button" class="sw" data-t="${id}" title="${t.name}" aria-label="${t.name}"><i style="background:linear-gradient(135deg,${t.bg} 55%,${t.ink} 55% 78%,${t.acc} 78%)"></i></button>`).join('');
     box.addEventListener('click', (e) => {
       const b = e.target.closest('.sw'); if (!b) return;
-      state.theme = b.dataset.t; save(); syncForm(); render();
+      state.theme = b.dataset.t; state.colors = { ink: THEMES[b.dataset.t].ink, acc: THEMES[b.dataset.t].acc }; save(); syncForm(); render();
     });
   }
 
@@ -107,6 +101,14 @@
   }
   const locale = () => (state.lang === 'en' ? 'en-GB' : 'fr-CH');
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  function themeColors() {
+    if (state.theme !== 'perso') return THEMES[state.theme];
+    const { ink, acc } = state.colors;
+    const n = parseInt(acc.slice(1), 16);
+    const lum = (0.299 * (n >> 16) + 0.587 * ((n >> 8) & 255) + 0.114 * (n & 255)) / 255;
+    return { bg: '#ffffff', ink, acc, onacc: lum > 0.62 ? '#141414' : '#ffffff' };
+  }
 
   function monthName(y, m) { return new Intl.DateTimeFormat(locale(), { month: 'long', timeZone: 'UTC' }).format(utc(y, m, 1)); }
   function weekdayShort(i, long) {
@@ -160,7 +162,7 @@
     const off = (first - state.weekStart + 7) % 7;
     const n = utc(y, m + 1, 0).getUTCDate();
     const rows = Math.ceil((off + n) / 7);
-    const t = THEMES[state.theme];
+    const t = themeColors();
     const name = monthName(y, m);
 
     let dow = state.weekNumbers ? '<div class="wn"></div>' : '';
