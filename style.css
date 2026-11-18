@@ -187,3 +187,6 @@ button.b.main { background: var(--ui-acc); color: var(--ui-acc-ink); border-colo
 .repo a:hover { color: var(--ui-acc); }
 .repo a { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; }
 .repo a:hover span, .repo a:hover { text-decoration: underline; }
+.repo2 { margin-top: 2px; }
+.repo2 a { color: var(--ui-mute); }
+.repo2 a:hover { color: var(--ui-acc); }
