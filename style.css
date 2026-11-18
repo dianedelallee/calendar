@@ -185,3 +185,5 @@ button.b.main { background: var(--ui-acc); color: var(--ui-acc-ink); border-colo
 .repo { margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--ui-line); }
 .repo a { color: var(--ui-mute); }
 .repo a:hover { color: var(--ui-acc); }
+.repo a { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; }
+.repo a:hover span, .repo a:hover { text-decoration: underline; }
