@@ -290,11 +290,12 @@
     if (!f || pendingMonth == null) return;
     const m = pendingMonth;
     shrink(f).then((url) => {
-      photos[m] = url; savePhoto(m, url);
+      photoMsg(''); photos[m] = url; savePhoto(m, url);
       if (state.layout === 'titre') state.layout = 'photo';
       save(); syncForm(); render();
-    }).catch(() => {});
+    }).catch(() => photoMsg(`Impossible de lire « ${f.name} » (${f.type || 'format inconnu'}, ${Math.round(f.size / 1024)} Ko). Essayez de l'enregistrer en JPEG ou PNG.`));
   });
+  function photoMsg(t) { const el = document.getElementById('photoMsg'); if (el) { el.textContent = t; el.hidden = !t; } }
   document.getElementById('slots').addEventListener('click', (e) => {
     const b = e.target.closest('[data-slot]'); if (!b) return;
     pendingMonth = +b.dataset.slot; fileInput.value = ''; fileInput.click();
@@ -309,18 +310,24 @@
       return `<button type="button" class="slot${photos[m] ? ' has' : ''}" data-slot="${m}"${bg} title="${name}"><span>${name.slice(0, 4)}</span></button>`;
     }).join('');
   }
+  function draw(src, w, h) {
+    const k = Math.min(1, 1600 / Math.max(w, h));
+    const c = document.createElement('canvas');
+    c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+    c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+    return c.toDataURL('image/jpeg', 0.85);
+  }
   function shrink(file) {
-    return new Promise((res, rej) => {
+    const viaImage = () => new Promise((res, rej) => {
       const img = new Image(); const u = URL.createObjectURL(file);
-      img.onload = () => {
-        const s = Math.min(1, 1600 / Math.max(img.width, img.height));
-        const c = document.createElement('canvas');
-        c.width = Math.round(img.width * s); c.height = Math.round(img.height * s);
-        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-        URL.revokeObjectURL(u); res(c.toDataURL('image/jpeg', 0.85));
-      };
-      img.onerror = rej; img.src = u;
+      img.onload = () => { try { res(draw(img, img.naturalWidth || img.width, img.naturalHeight || img.height)); } catch (e) { rej(e); } URL.revokeObjectURL(u); };
+      img.onerror = () => { URL.revokeObjectURL(u); rej(new Error('decode')); };
+      img.src = u;
     });
+    if (typeof createImageBitmap !== 'function') return viaImage();
+    return createImageBitmap(file, { imageOrientation: 'from-image' })
+      .then((bmp) => { const url = draw(bmp, bmp.width, bmp.height); if (bmp.close) bmp.close(); return url; })
+      .catch(viaImage);
   }
   function idb(fn) {
     try {
@@ -329,13 +336,16 @@
       req.onsuccess = () => { try { fn(req.result.transaction('p', 'readwrite').objectStore('p')); } catch (e) { /* ignoré */ } };
     } catch (e) { /* ignoré */ }
   }
-  const savePhoto = (m, url) => idb((s) => s.put(url, m));
+  const savePhoto = (m, url) => idb((s) => {
+    const r = s.put(url, m);
+    r.onerror = () => photoMsg('Image affichée mais non enregistrée (stockage du navigateur plein ou bloqué) : elle ne sera pas conservée au rechargement.');
+  });
   function removePhoto(m) { delete photos[m]; idb((s) => s.delete(m)); render(); }
   window.__buildSlots = () => buildSlots();
   function loadPhotos() {
     idb((s) => {
       const r = s.openCursor();
-      r.onsuccess = () => { const c = r.result; if (c) { photos[c.key] = c.value; c.continue(); } else if (state.layout === 'photo') render(); };
+      r.onsuccess = () => { const c = r.result; if (c) { photos[c.key] = c.value; c.continue(); } else render(); };
     });
   }
 

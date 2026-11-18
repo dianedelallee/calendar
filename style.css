@@ -191,3 +191,4 @@ button.b.main { background: var(--ui-acc); color: var(--ui-acc-ink); border-colo
 .home:hover { background: var(--ui-acc); }
 .picks { margin-top: 2px; }
 .pick input[type=color] { width: 100%; height: 38px; padding: 2px; border: 1px solid var(--ui-line); border-radius: 6px; background: #fff; cursor: pointer; }
+.err { color: #b3261e; }
