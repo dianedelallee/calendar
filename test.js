@@ -26,3 +26,11 @@ assert.strictEqual(L.easter(2027).toISOString().slice(0,10),'2027-03-28');
 const H27 = L.holidaysFor(2027,{cantons:['VD','GE'],lang:'fr'});
 console.log(Object.entries(H27).sort().map(([k,v])=>k+' '+v.map(x=>x.label).join('|')).join('\n'));
 for (const y of [2026,2027,2028]) { console.log(y); const m=L.moonEvents(y,'fr'); for (const [k,v] of Object.entries(m).sort()) for(const e of v) if(e.phase==='full'&&k.startsWith(y)) console.log(' ',k,e.time,e.name); }
+
+// France 2027
+const F = L.holidaysFor(2027,{cantons:['FR'],lang:'fr'});
+const exp27 = {'2027-01-01':'Nouvel An','2027-03-28':'Pâques','2027-03-29':'Lundi de Pâques','2027-05-01':'Fête du Travail','2027-05-06':'Ascension','2027-05-08':'Victoire 1945','2027-05-16':'Pentecôte','2027-05-17':'Lundi de Pentecôte','2027-07-14':'Fête nationale','2027-08-15':'Assomption','2027-11-01':'Toussaint','2027-11-11':'Armistice 1918','2027-12-25':'Noël'};
+assert.deepStrictEqual(Object.fromEntries(Object.entries(F).map(([k,v])=>[k,v[0].label])), exp27);
+console.log('ok France 2027');
+// pas de fériés suisses propres à VD/GE quand seule la France est choisie
+assert(!F['2027-08-01'] && !F['2027-09-20'] && !F['2027-12-31'] && !F['2027-01-02']);

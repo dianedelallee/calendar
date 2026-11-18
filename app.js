@@ -19,7 +19,7 @@
   const HAND = ['main', 'bloc'];
   const DEFAULTS = () => ({
     year: defaultYear(), lang: 'fr', weekStart: 1, theme: 'electrique', colors: { ink: '#2736d9', acc: '#ff6a1f' }, layout: 'titre', font: 'grotesk',
-    cantons: { VD: true, GE: true }, excluded: [],
+    cantons: { VD: true, GE: true, FR: false }, excluded: [],
     moon: { full: true, names: true, new: true, quarters: false, time: true },
     weekNumbers: false, weekendTint: true, notes: true, mini: true,
   });

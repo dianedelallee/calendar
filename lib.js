@@ -189,20 +189,26 @@
 
   /** Catalogue : id, cantons, noms, calcul de la date. */
   const HOLIDAYS = [
-    { id: 'newyear', cantons: ['VD', 'GE'], fr: "Nouvel An", en: "New Year's Day", date: (y) => [y, 1, 1] },
+    { id: 'newyear', cantons: ['VD', 'GE', 'FR'], fr: "Nouvel An", en: "New Year's Day", date: (y) => [y, 1, 1] },
     { id: 'berchtold', cantons: ['VD'], fr: 'Lendemain du Nouvel An', en: "Berchtold's Day", date: (y) => [y, 1, 2] },
     { id: 'goodfriday', cantons: ['VD', 'GE'], fr: 'Vendredi saint', en: 'Good Friday', date: (y) => ymd(addDays(easter(y), -2)) },
-    { id: 'eastersun', cantons: ['VD', 'GE'], fr: 'Pâques', en: 'Easter Sunday', date: (y) => ymd(easter(y)), optional: true },
-    { id: 'eastermon', cantons: ['VD', 'GE'], fr: 'Lundi de Pâques', en: 'Easter Monday', date: (y) => ymd(addDays(easter(y), 1)) },
-    { id: 'ascension', cantons: ['VD', 'GE'], fr: 'Ascension', en: 'Ascension Day', date: (y) => ymd(addDays(easter(y), 39)) },
-    { id: 'pentecostsun', cantons: ['VD', 'GE'], fr: 'Pentecôte', en: 'Whit Sunday', date: (y) => ymd(addDays(easter(y), 49)), optional: true },
-    { id: 'pentecostmon', cantons: ['VD', 'GE'], fr: 'Lundi de Pentecôte', en: 'Whit Monday', date: (y) => ymd(addDays(easter(y), 50)) },
+    { id: 'eastersun', cantons: ['VD', 'GE', 'FR'], fr: 'Pâques', en: 'Easter Sunday', date: (y) => ymd(easter(y)), optional: true },
+    { id: 'eastermon', cantons: ['VD', 'GE', 'FR'], fr: 'Lundi de Pâques', en: 'Easter Monday', date: (y) => ymd(addDays(easter(y), 1)) },
+    { id: 'ascension', cantons: ['VD', 'GE', 'FR'], fr: 'Ascension', en: 'Ascension Day', date: (y) => ymd(addDays(easter(y), 39)) },
+    { id: 'pentecostsun', cantons: ['VD', 'GE', 'FR'], fr: 'Pentecôte', en: 'Whit Sunday', date: (y) => ymd(addDays(easter(y), 49)), optional: true },
+    { id: 'pentecostmon', cantons: ['VD', 'GE', 'FR'], fr: 'Lundi de Pentecôte', en: 'Whit Monday', date: (y) => ymd(addDays(easter(y), 50)) },
     { id: 'natday', cantons: ['VD', 'GE'], fr: 'Fête nationale', en: 'Swiss National Day', date: (y) => [y, 8, 1] },
     { id: 'jeunefed', cantons: ['VD'], fr: 'Lundi du Jeûne fédéral', en: 'Federal Fast Monday',
       date: (y) => { const s = firstSundayOnOrAfter(y, 9, 15); return [y, 9, s + 1]; } }, // 3e dimanche + 1
     { id: 'jeunegen', cantons: ['GE'], fr: 'Jeûne genevois', en: 'Genevan Fast',
       date: (y) => { const s = firstSundayOnOrAfter(y, 9, 1); return [y, 9, s + 4]; } }, // jeudi après le 1er dimanche
-    { id: 'christmas', cantons: ['VD', 'GE'], fr: 'Noël', en: 'Christmas Day', date: (y) => [y, 12, 25] },
+    { id: 'labour', cantons: ['FR'], fr: 'Fête du Travail', en: 'Labour Day', date: (y) => [y, 5, 1] },
+    { id: 'victory', cantons: ['FR'], fr: 'Victoire 1945', en: 'Victory in Europe Day', date: (y) => [y, 5, 8] },
+    { id: 'bastille', cantons: ['FR'], fr: 'Fête nationale', en: 'Bastille Day', date: (y) => [y, 7, 14] },
+    { id: 'assumption', cantons: ['FR'], fr: 'Assomption', en: 'Assumption Day', date: (y) => [y, 8, 15] },
+    { id: 'allsaints', cantons: ['FR'], fr: 'Toussaint', en: "All Saints' Day", date: (y) => [y, 11, 1] },
+    { id: 'armistice', cantons: ['FR'], fr: 'Armistice 1918', en: 'Armistice Day', date: (y) => [y, 11, 11] },
+    { id: 'christmas', cantons: ['VD', 'GE', 'FR'], fr: 'Noël', en: 'Christmas Day', date: (y) => [y, 12, 25] },
     { id: 'restauration', cantons: ['GE'], fr: 'Restauration de la République', en: 'Restoration of the Republic', date: (y) => [y, 12, 31] },
   ];
   function ymd(dt) { return [dt.getUTCFullYear(), dt.getUTCMonth() + 1, dt.getUTCDate()]; }
