@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendrier de l'année</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Bebas+Neue&family=DM+Sans:wght@300;400;700&family=Fredoka:wght@700&family=Playfair+Display:wght@800&family=Roboto+Condensed:wght@300;400&family=Lilita+One&family=Patrick+Hand&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="wobble" x="-3%" y="-3%" width="106%" height="106%"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2"/></filter></svg>
+<div class="app">
+  <aside class="side">
+    <h1>Calendrier de l'année</h1>
+    <p class="sub">12 pages A4, prêtes à imprimer.</p>
+
+    <fieldset>
+      <legend>Année</legend>
+      <div class="row">
+        <label class="f">Année<input type="number" id="year" data-k="year" min="1900" max="2100"></label>
+        <label class="f">Langue
+          <select data-k="lang"><option value="fr">Français</option><option value="en">English</option></select></label>
+      </div>
+      <div class="row">
+        <label class="f">Début de semaine
+          <select data-k="weekStart"><option value="1">Lundi</option><option value="0">Dimanche</option></select></label>
+      </div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Jours fériés</legend>
+      <label class="chk"><input type="checkbox" data-k="cantons.VD"> Vaud</label>
+      <label class="chk"><input type="checkbox" data-k="cantons.GE"> Genève</label>
+      <details><summary>Choisir les jours un par un</summary><div id="holList"></div></details>
+    </fieldset>
+
+    <fieldset>
+      <legend>Lune (heure de Zurich)</legend>
+      <label class="chk"><input type="checkbox" data-k="moon.full"> Pleines lunes</label>
+      <label class="chk"><input type="checkbox" data-k="moon.names"> Avec leur nom <small>(Lune du Chasseur, des Fraises…)</small></label>
+      <label class="chk"><input type="checkbox" data-k="moon.new"> Nouvelles lunes</label>
+      <label class="chk"><input type="checkbox" data-k="moon.quarters"> Quartiers</label>
+      <label class="chk"><input type="checkbox" data-k="moon.time"> Afficher l'heure</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Mise en page</legend>
+      <div class="swatches" id="themes"></div>
+      <div class="row">
+        <label class="f">Style
+          <select data-k="layout"><option value="titre">Grand titre</option><option value="photo">Image en haut</option><option value="main">Dessiné à la main, avec image</option><option value="bloc">Dessiné à la main, sans image</option></select></label>
+        <label class="f">Police du titre
+          <select data-k="font"><option value="grotesk">Large</option><option value="condense">Condensée</option><option value="elegant">Élégante</option><option value="rond">Ronde</option></select></label>
+      </div>
+      <label class="chk"><input type="checkbox" data-k="weekNumbers"> Numéros de semaine</label>
+      <label class="chk"><input type="checkbox" data-k="weekendTint"> Week-ends en couleur</label>
+      <label class="chk"><input type="checkbox" data-k="notes"> Zone de notes</label>
+      <label class="chk"><input type="checkbox" data-k="mini"> Mois précédent et suivant en miniature</label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Une image par mois</legend>
+      <label class="chk"><input type="checkbox" id="usePhotos"> Mettre une image en haut de chaque mois</label>
+      <div class="slots" id="slots"></div>
+      <p class="hint">Cliquez sur un mois pour choisir son image. Les images restent sur cet ordinateur.</p>
+    </fieldset>
+
+    <div class="btns">
+      <button class="b main" id="print" type="button">Imprimer / PDF</button>
+      <button class="b" id="reset" type="button">Réinitialiser</button>
+    </div>
+    <p class="hint">Dans la fenêtre d'impression : A4, marges « Aucune », cochez « Graphiques d'arrière-plan ».</p>
+  </aside>
+  <main class="stage"><div id="pages"></div></main>
+</div>
+<input type="file" id="file" accept="image/*" hidden>
+<script src="lib.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
